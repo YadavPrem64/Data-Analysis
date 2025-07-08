@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Explorease{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4>Welcome to Explorease Dashboard</h4>
+            </div>
+            <div class="card-body">
+                <h5>Hello, {{ user.first_name|default:user.username }}!</h5>
+                <p class="lead">Welcome to your Explorease dashboard. This is a secure area where you can manage your account and explore our features.</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-info">
+                            <div class="card-body text-center">
+                                <i class="fas fa-user-circle fa-3x text-info mb-3"></i>
+                                <h6>Profile Information</h6>
+                                <p class="small text-muted">Manage your personal details and preferences</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-success">
+                            <div class="card-body text-center">
+                                <i class="fas fa-shield-alt fa-3x text-success mb-3"></i>
+                                <h6>Security Settings</h6>
+                                <p class="small text-muted">Update your password and security preferences</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h6>Account Information</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                <p><strong>Member Since:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
+                
+                {% if user.userprofile.email_verified %}
+                    <span class="badge bg-success">Email Verified</span>
+                {% else %}
+                    <span class="badge bg-warning">Email Not Verified</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header bg-warning text-dark">
+                <h6>Security Notice</h6>
+            </div>
+            <div class="card-body">
+                <p class="small">
+                    For your security, please log out when using shared computers. 
+                    Your session will automatically expire after periods of inactivity.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+{% endblock %}

@@ -1,0 +1,28 @@
+Security Event: LOGIN_FAILED | IP: 127.0.0.1 | User: testuser | Details: Failed login attempt for username: testuser
+Security Event: LOGIN_SUCCESS | IP: 127.0.0.1 | User: testuser | Details: User testuser logged in successfully
+Security Event: LOGOUT | IP: 127.0.0.1 | User: testuser | Details: User testuser logged out
+Security Event: LOGIN_FAILED | IP: 127.0.0.1 | User: testuser | Details: Failed login attempt for username: testuser
+Security Event: LOGIN_FAILED | IP: 127.0.0.1 | User: testuser | Details: Failed login attempt for username: testuser
+Security Event: LOGIN_FAILED | IP: 127.0.0.1 | User: testuser | Details: Failed login attempt for username: testuser
+Security Event: LOGIN_FAILED | IP: 127.0.0.1 | User: testuser | Details: Failed login attempt for username: testuser
+Security Event: LOGIN_FAILED | IP: 127.0.0.1 | User: testuser | Details: Failed login attempt for username: testuser
+Security Event: RATE_LIMITED | IP: 127.0.0.1 | User: None | Details: Too many failed login attempts
+Security Event: RATE_LIMITED | IP: 127.0.0.1 | User: None | Details: Too many failed login attempts
+Security Event: LOGIN_SUCCESS | IP: 127.0.0.1 | User: testuser | Details: User testuser logged in successfully
+Security Event: USER_REGISTERED | IP: 127.0.0.1 | User: newuser | Details: New user registered: newuser
+Security Event: LOGIN_FAILED | IP: 127.0.0.1 | User: testuser | Details: Failed login attempt for username: testuser
+Security Event: LOGIN_SUCCESS | IP: 127.0.0.1 | User: testuser | Details: User testuser logged in successfully
+Security Event: LOGOUT | IP: 127.0.0.1 | User: testuser | Details: User testuser logged out
+Security Event: LOGIN_FAILED | IP: 127.0.0.1 | User: testuser | Details: Failed login attempt for username: testuser
+Security Event: LOGIN_FAILED | IP: 127.0.0.1 | User: testuser | Details: Failed login attempt for username: testuser
+Security Event: LOGIN_FAILED | IP: 127.0.0.1 | User: testuser | Details: Failed login attempt for username: testuser
+Security Event: LOGIN_FAILED | IP: 127.0.0.1 | User: testuser | Details: Failed login attempt for username: testuser
+Security Event: LOGIN_FAILED | IP: 127.0.0.1 | User: testuser | Details: Failed login attempt for username: testuser
+Security Event: RATE_LIMITED | IP: 127.0.0.1 | User: None | Details: Too many failed login attempts
+Security Event: RATE_LIMITED | IP: 127.0.0.1 | User: None | Details: Too many failed login attempts
+Security Event: LOGIN_SUCCESS | IP: 127.0.0.1 | User: testuser | Details: User testuser logged in successfully
+Security Event: USER_REGISTERED | IP: 127.0.0.1 | User: newuser | Details: New user registered: newuser
+Security Event: USER_REGISTERED | IP: 127.0.0.1 | User: johndoe123 | Details: New user registered: johndoe123
+Security Event: LOGIN_SUCCESS | IP: 127.0.0.1 | User: johndoe123 | Details: User johndoe123 logged in successfully
+Security Event: LOGOUT | IP: 127.0.0.1 | User: johndoe123 | Details: User johndoe123 logged out
+Security Event: LOGIN_FAILED | IP: 127.0.0.1 | User: johndoe123 | Details: Failed login attempt for username: johndoe123
