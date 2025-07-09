@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}Debug Authentication - Travel Website{% endblock %}
+
+{% block content %}
+<h2>Authentication Debug Tool</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Test Authentication</h3>
+        <form id="debugForm">
+            <div class="form-group">
+                <label for="test_username">Username:</label>
+                <input type="text" id="test_username" name="username" placeholder="Enter username to test">
+            </div>
+            <div class="form-group">
+                <label for="test_password">Password:</label>
+                <input type="password" id="test_password" name="password" placeholder="Enter password to test">
+            </div>
+            <button type="submit">Debug Authentication</button>
+        </form>
+    </div>
+    
+    <div class="col-md-6">
+        <h3>What this tool checks:</h3>
+        <ul>
+            <li>Database connection status</li>
+            <li>Whether the user exists</li>
+            <li>Password hash verification</li>
+            <li>Django authentication flow</li>
+            <li>Session configuration</li>
+            <li>Specific error messages and recommendations</li>
+        </ul>
+    </div>
+</div>
+
+<div id="debugResult" style="display: none;">
+    <h3>Debug Results</h3>
+    <div id="resultContent" class="debug-info"></div>
+</div>
+
+<div id="loadingIndicator" style="display: none;">
+    <p>Running authentication debug tests...</p>
+</div>
+
+<script>
+document.getElementById('debugForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('test_username').value;
+    const password = document.getElementById('test_password').value;
+    
+    if (!username || !password) {
+        alert('Please enter both username and password');
+        return;
+    }
+    
+    // Show loading indicator
+    document.getElementById('loadingIndicator').style.display = 'block';
+    document.getElementById('debugResult').style.display = 'none';
+    
+    // Make AJAX request to debug endpoint
+    fetch('{% url "debug_auth" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            username: username,
+            password: password
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('loadingIndicator').style.display = 'none';
+        document.getElementById('debugResult').style.display = 'block';
+        document.getElementById('resultContent').innerHTML = formatDebugResult(data);
+    })
+    .catch(error => {
+        document.getElementById('loadingIndicator').style.display = 'none';
+        document.getElementById('debugResult').style.display = 'block';
+        document.getElementById('resultContent').innerHTML = 'Error: ' + error.message;
+    });
+});
+
+function formatDebugResult(data) {
+    let html = '<h4>Debug Results - ' + data.timestamp + '</h4>\n\n';
+    
+    // Input received
+    html += '<strong>Input Received:</strong>\n';
+    html += '- Username: "' + data.input_received.username + '"\n';
+    html += '- Password Length: ' + data.input_received.password_length + '\n';
+    html += '- Password Provided: ' + data.input_received.password_provided + '\n\n';
+    
+    // Database check
+    html += '<strong>Database Check:</strong>\n';
+    if (data.database_check.connection === 'SUCCESS') {
+        html += '<span class="status-good">✓ Database Connection: SUCCESS</span>\n';
+        html += '- Total Users: ' + data.database_check.total_users + '\n';
+        
+        if (data.database_check.user_exists === true) {
+            html += '<span class="status-good">✓ User Exists: YES</span>\n';
+            const userInfo = data.database_check.user_info;
+            html += '  - User ID: ' + userInfo.id + '\n';
+            html += '  - Username: ' + userInfo.username + '\n';
+            html += '  - Email: ' + userInfo.email + '\n';
+            html += '  - Active: ' + (userInfo.is_active ? '<span class="status-good">YES</span>' : '<span class="status-bad">NO</span>') + '\n';
+            html += '  - Staff: ' + userInfo.is_staff + '\n';
+            html += '  - Superuser: ' + userInfo.is_superuser + '\n';
+            html += '  - Last Login: ' + (userInfo.last_login || 'Never') + '\n';
+            html += '  - Date Joined: ' + userInfo.date_joined + '\n';
+            html += '  - Password Hash: ' + userInfo.password_hash_start + '\n';
+        } else if (data.database_check.user_exists === false) {
+            html += '<span class="status-bad">✗ User Exists: NO</span>\n';
+        }
+    } else {
+        html += '<span class="status-bad">✗ Database Connection: FAILED</span>\n';
+        html += '- Error: ' + data.database_check.error + '\n';
+    }
+    html += '\n';
+    
+    // Password verification
+    if (data.password_verification) {
+        html += '<strong>Password Verification:</strong>\n';
+        if (data.password_verification.check_password_result === true) {
+            html += '<span class="status-good">✓ Password Check: CORRECT</span>\n';
+        } else if (data.password_verification.check_password_result === false) {
+            html += '<span class="status-bad">✗ Password Check: INCORRECT</span>\n';
+        }
+        html += '- Hash Algorithm: ' + data.password_verification.hash_algorithm + '\n\n';
+    }
+    
+    // Django authentication
+    if (data.django_auth) {
+        html += '<strong>Django Authentication:</strong>\n';
+        if (data.django_auth.authenticate_result === true) {
+            html += '<span class="status-good">✓ Django Authenticate: SUCCESS</span>\n';
+            html += '- User Object: ' + data.django_auth.user_object + '\n';
+        } else if (data.django_auth.authenticate_result === false) {
+            html += '<span class="status-bad">✗ Django Authenticate: FAILED</span>\n';
+        }
+        
+        if (data.django_auth.authenticate_error) {
+            html += '<span class="status-bad">- Error: ' + data.django_auth.authenticate_error + '</span>\n';
+        }
+        html += '\n';
+    }
+    
+    // Session info
+    html += '<strong>Session Information:</strong>\n';
+    html += '- Session Key: ' + (data.session_info.session_key || 'None') + '\n';
+    html += '- Session Engine: ' + data.session_info.session_engine + '\n';
+    html += '- Currently Authenticated: ' + data.session_info.is_authenticated + '\n';
+    html += '- Current User: ' + data.session_info.current_user + '\n\n';
+    
+    // Recommendations
+    if (data.recommendations && data.recommendations.length > 0) {
+        html += '<strong>Recommendations:</strong>\n';
+        data.recommendations.forEach(function(rec, index) {
+            html += (index + 1) + '. ' + rec + '\n';
+        });
+    }
+    
+    return html;
+}
+</script>
+
+<style>
+.row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+.col-md-6 {
+    flex: 1;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}User List - Travel Website{% endblock %}
+
+{% block content %}
+<h2>User Management</h2>
+
+{% if error %}
+    <div class="message error">
+        <strong>Error:</strong> {{ error }}
+    </div>
+{% else %}
+    <p><strong>Total Users:</strong> {{ total_count }}</p>
+    
+    {% if users %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Name</th>
+                    <th>Active</th>
+                    <th>Staff</th>
+                    <th>Superuser</th>
+                    <th>Last Login</th>
+                    <th>Date Joined</th>
+                    <th>Password Hash</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td><strong>{{ user.username }}</strong></td>
+                    <td>{{ user.email|default:"—" }}</td>
+                    <td>{{ user.first_name }} {{ user.last_name }}</td>
+                    <td>
+                        {% if user.is_active %}
+                            <span class="status-good">✓ Active</span>
+                        {% else %}
+                            <span class="status-bad">✗ Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.is_staff|yesno:"Yes,No" }}</td>
+                    <td>{{ user.is_superuser|yesno:"Yes,No" }}</td>
+                    <td>{{ user.last_login|default:"Never" }}</td>
+                    <td>{{ user.date_joined }}</td>
+                    <td><code>{{ user.password_hash }}</code></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="message info">
+            <strong>No users found.</strong> Create a user with:
+            <div class="debug-info">
+# Create superuser
+python manage.py createsuperuser
+
+# Or create regular user in Django shell
+python manage.py shell
+>>> from django.contrib.auth.models import User
+>>> user = User.objects.create_user('username', 'email@example.com', 'password')
+>>> user.save()
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
+
+<div style="margin-top: 30px;">
+    <h3>User Management Commands</h3>
+    <div class="debug-info">
+# List all users in Django shell
+python manage.py shell
+>>> from django.contrib.auth.models import User
+>>> for user in User.objects.all():
+...     print(f"Username: {user.username}, Active: {user.is_active}, Email: {user.email}")
+
+# Create a test user
+>>> user = User.objects.create_user('testuser', 'test@example.com', 'testpass123')
+>>> user.save()
+
+# Change user password
+>>> user = User.objects.get(username='testuser')
+>>> user.set_password('newpassword123')
+>>> user.save()
+
+# Activate/deactivate user
+>>> user = User.objects.get(username='testuser')
+>>> user.is_active = True  # or False
+>>> user.save()
+
+# Make user staff/superuser
+>>> user = User.objects.get(username='testuser')
+>>> user.is_staff = True
+>>> user.is_superuser = True
+>>> user.save()
+    </div>
+</div>
+
+<div style="margin-top: 20px;">
+    <h3>Troubleshooting</h3>
+    <ul>
+        <li><strong>No users visible:</strong> Database might be empty or migrations not run</li>
+        <li><strong>User exists but can't login:</strong> Check if user.is_active is True</li>
+        <li><strong>Password issues:</strong> Use user.set_password() method, not direct assignment</li>
+        <li><strong>Permissions issues:</strong> Check is_staff and is_superuser flags</li>
+    </ul>
+</div>
+{% endblock %}
