@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Website - Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .navigation {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .nav-links a {
+            color: #007bff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            border: 1px solid #007bff;
+        }
+        .nav-links a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .user-info {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .messages {
+            margin-bottom: 20px;
+        }
+        .messages .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome to Travel Website</h1>
+        <p>Your gateway to amazing travel experiences</p>
+    </div>
+    
+    <!-- Display messages -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <div class="navigation">
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+                <span>Welcome, {{ user.first_name|default:user.username }}!</span>
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="content">
+        {% if user.is_authenticated %}
+            <div class="user-info">
+                <h3>User Information</h3>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                {% if user.first_name or user.last_name %}
+                    <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                {% endif %}
+                <p><strong>Member since:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
+            </div>
+            
+            <h2>Travel Dashboard</h2>
+            <p>Welcome to your travel dashboard! Here you can manage your travel plans, bookings, and explore new destinations.</p>
+            
+            <h3>Features Coming Soon:</h3>
+            <ul>
+                <li>Browse destinations</li>
+                <li>Book travel packages</li>
+                <li>Manage your bookings</li>
+                <li>View travel history</li>
+                <li>Connect with other travelers</li>
+            </ul>
+        {% else %}
+            <h2>Discover Amazing Destinations</h2>
+            <p>Join our travel community to unlock exclusive deals, personalized recommendations, and connect with fellow travelers.</p>
+            
+            <h3>Why Join Us?</h3>
+            <ul>
+                <li>Exclusive travel deals and packages</li>
+                <li>Personalized travel recommendations</li>
+                <li>24/7 customer support</li>
+                <li>Easy booking management</li>
+                <li>Travel community and reviews</li>
+            </ul>
+            
+            <p>Ready to start your journey? <a href="{% url 'register' %}">Create an account</a> or <a href="{% url 'login' %}">sign in</a> to get started!</p>
+        {% endif %}
+    </div>
+</body>
+</html>
