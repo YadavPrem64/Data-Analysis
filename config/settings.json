@@ -1,0 +1,91 @@
+{
+    "app": {
+        "name": "AI Guardian",
+        "version": "1.0.0",
+        "title": "AI Guardian: Intelligent Streetlight & Surveillance Network"
+    },
+    "ui": {
+        "theme": "dark",
+        "accent_color": "#00bfff",
+        "window_width": 1400,
+        "window_height": 900,
+        "min_width": 1200,
+        "min_height": 800,
+        "font_family": "Roboto",
+        "font_sizes": {
+            "small": 10,
+            "medium": 12,
+            "large": 14,
+            "title": 18
+        }
+    },
+    "camera": {
+        "default_source": 0,
+        "resolution": {
+            "width": 640,
+            "height": 480
+        },
+        "fps": 30,
+        "buffer_size": 1,
+        "auto_exposure": true
+    },
+    "detection": {
+        "model_type": "yolo",
+        "model_path": "yolov8n.pt",
+        "confidence_threshold": 0.5,
+        "iou_threshold": 0.45,
+        "max_detections": 50,
+        "classes_of_interest": [
+            "person",
+            "car",
+            "truck",
+            "motorcycle",
+            "bicycle",
+            "knife",
+            "gun"
+        ],
+        "suspicious_activity": {
+            "loitering_time": 30,
+            "crowd_threshold": 10,
+            "motion_sensitivity": 0.3
+        }
+    },
+    "alerts": {
+        "visual": {
+            "enabled": true,
+            "flash_duration": 1.0,
+            "colors": {
+                "low": "#ffff00",
+                "medium": "#ff8c00",
+                "high": "#ff0000",
+                "critical": "#8b0000"
+            }
+        },
+        "audio": {
+            "enabled": true,
+            "volume": 0.7,
+            "sounds": {
+                "detection": "assets/sounds/detection.wav",
+                "alert": "assets/sounds/alert.wav",
+                "emergency": "assets/sounds/emergency.wav"
+            }
+        },
+        "logging": {
+            "enabled": true,
+            "log_file": "logs/alerts.log",
+            "max_file_size": "10MB",
+            "backup_count": 5
+        }
+    },
+    "performance": {
+        "max_fps": 30,
+        "processing_threads": 2,
+        "memory_limit": "512MB",
+        "enable_gpu": true
+    },
+    "network": {
+        "stream_port": 8080,
+        "api_port": 8081,
+        "enable_remote_access": false
+    }
+}
