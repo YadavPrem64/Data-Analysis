@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Travel Website{% endblock %}
+
+{% block content %}
+<h2>Welcome to the Travel Website Dashboard</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>User Information</h3>
+        <table>
+            <tr><th>Username</th><td>{{ user.username }}</td></tr>
+            <tr><th>Email</th><td>{{ user.email|default:"Not provided" }}</td></tr>
+            <tr><th>First Name</th><td>{{ user.first_name|default:"Not provided" }}</td></tr>
+            <tr><th>Last Name</th><td>{{ user.last_name|default:"Not provided" }}</td></tr>
+            <tr><th>Staff Status</th><td>{{ user.is_staff|yesno:"Yes,No" }}</td></tr>
+            <tr><th>Superuser</th><td>{{ user.is_superuser|yesno:"Yes,No" }}</td></tr>
+            <tr><th>Active</th><td>{{ user.is_active|yesno:"Yes,No" }}</td></tr>
+            <tr><th>Last Login</th><td>{{ user.last_login|default:"Never" }}</td></tr>
+            <tr><th>Date Joined</th><td>{{ user.date_joined }}</td></tr>
+        </table>
+    </div>
+    
+    <div class="col-md-6">
+        <h3>Debug Tools</h3>
+        <p>Since you're successfully logged in, the authentication system is working! 
+        However, you can still use these tools to debug issues:</p>
+        
+        <div style="margin: 20px 0;">
+            <a href="{% url 'debug_auth' %}" class="btn">Debug Authentication</a>
+            <a href="{% url 'database_status' %}" class="btn">Database Status</a>
+            <a href="{% url 'user_list' %}" class="btn">User List</a>
+        </div>
+        
+        <h3>Authentication Success!</h3>
+        <div class="debug-info">
+✓ Login successful
+✓ User authenticated  
+✓ Session created
+✓ User is active
+✓ All authentication checks passed
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 30px;">
+    <h3>Travel Website Features</h3>
+    <p>This is where your travel website content would go. The authentication system is now working properly and you can:</p>
+    <ul>
+        <li>Add travel destinations</li>
+        <li>Manage user bookings</li>
+        <li>Create travel packages</li>
+        <li>Handle user profiles</li>
+        <li>And much more!</li>
+    </ul>
+</div>
+
+<style>
+.row {
+    display: flex;
+    gap: 20px;
+}
+.col-md-6 {
+    flex: 1;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block title %}Database Status - Travel Website{% endblock %}
+
+{% block content %}
+<h2>Database Status and Configuration</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Database Connection</h3>
+        {% if status.database.connection == 'SUCCESS' %}
+            <div class="message success">
+                <span class="status-good">✓ Database Connection: SUCCESS</span>
+            </div>
+            <table>
+                <tr><th>Engine</th><td>{{ status.database.engine }}</td></tr>
+                <tr><th>Database Name</th><td>{{ status.database.name }}</td></tr>
+                <tr><th>Version</th><td>{{ status.database.version }}</td></tr>
+            </table>
+        {% else %}
+            <div class="message error">
+                <span class="status-bad">✗ Database Connection: FAILED</span>
+                <br>Error: {{ status.database.error }}
+            </div>
+        {% endif %}
+        
+        <h3>Database Tables</h3>
+        {% if status.tables.available %}
+            <p><span class="status-good">✓ Found {{ status.tables.available|length }} tables</span></p>
+            
+            <h4>Authentication Tables:</h4>
+            <ul>
+                <li>auth_user: 
+                    {% if status.tables.auth_user_exists %}
+                        <span class="status-good">✓ Exists</span>
+                        {% if status.tables.user_count is not None %}
+                            ({{ status.tables.user_count }} users)
+                        {% endif %}
+                    {% else %}
+                        <span class="status-bad">✗ Missing</span>
+                    {% endif %}
+                </li>
+                <li>auth_permission: 
+                    {% if status.tables.auth_permission_exists %}
+                        <span class="status-good">✓ Exists</span>
+                    {% else %}
+                        <span class="status-bad">✗ Missing</span>
+                    {% endif %}
+                </li>
+                <li>django_session: 
+                    {% if status.tables.django_session_exists %}
+                        <span class="status-good">✓ Exists</span>
+                    {% else %}
+                        <span class="status-bad">✗ Missing</span>
+                    {% endif %}
+                </li>
+            </ul>
+            
+            <h4>All Tables:</h4>
+            <div class="debug-info">
+{% for table in status.tables.available %}{{ table }}
+{% endfor %}
+            </div>
+        {% else %}
+            <div class="message error">
+                No tables found. Run migrations first.
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-6">
+        <h3>Authentication Configuration</h3>
+        <table>
+            <tr><th>Auth User Model</th><td>{{ status.auth_config.auth_user_model }}</td></tr>
+            <tr><th>Login URL</th><td>{{ status.auth_config.login_url }}</td></tr>
+            <tr><th>Login Redirect URL</th><td>{{ status.auth_config.login_redirect_url }}</td></tr>
+            <tr><th>Logout Redirect URL</th><td>{{ status.auth_config.logout_redirect_url }}</td></tr>
+        </table>
+        
+        <h4>Authentication Backends:</h4>
+        <ul>
+            {% for backend in status.auth_config.authentication_backends %}
+                <li>{{ backend }}</li>
+            {% endfor %}
+        </ul>
+        
+        <h4>Password Hashers:</h4>
+        <ul>
+            {% for hasher in status.auth_config.password_hashers %}
+                <li>{{ hasher }}</li>
+            {% endfor %}
+        </ul>
+        
+        <h3>Session Configuration</h3>
+        <table>
+            <tr><th>Session Engine</th><td>{{ status.session_config.session_engine }}</td></tr>
+            <tr><th>Cookie Age</th><td>{{ status.session_config.session_cookie_age }} seconds</td></tr>
+            <tr><th>Cookie Secure</th><td>{{ status.session_config.session_cookie_secure|yesno:"Yes,No" }}</td></tr>
+            <tr><th>Cookie HTTP Only</th><td>{{ status.session_config.session_cookie_httponly|yesno:"Yes,No" }}</td></tr>
+            <tr><th>Save Every Request</th><td>{{ status.session_config.session_save_every_request|yesno:"Yes,No" }}</td></tr>
+        </table>
+    </div>
+</div>
+
+<div style="margin-top: 30px;">
+    <h3>Database Setup Commands</h3>
+    <div class="debug-info">
+# Run initial migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# Create superuser
+python manage.py createsuperuser
+
+# Check migration status
+python manage.py showmigrations
+
+# Reset database (CAUTION: Deletes all data)
+rm db.sqlite3
+python manage.py migrate
+
+# Database shell access
+python manage.py dbshell
+    </div>
+</div>
+
+<div style="margin-top: 20px;">
+    <h3>Common Issues and Solutions</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Missing Tables</h4>
+            <ul>
+                <li>Run <code>python manage.py migrate</code></li>
+                <li>Check if apps are in INSTALLED_APPS</li>
+                <li>Run <code>python manage.py makemigrations</code> first if needed</li>
+            </ul>
+            
+            <h4>No Users</h4>
+            <ul>
+                <li>Create superuser: <code>python manage.py createsuperuser</code></li>
+                <li>Or create user programmatically in Django shell</li>
+            </ul>
+        </div>
+        
+        <div class="col-md-6">
+            <h4>Authentication Failures</h4>
+            <ul>
+                <li>Check user.is_active is True</li>
+                <li>Verify password using user.check_password()</li>
+                <li>Ensure authentication backends are correct</li>
+                <li>Check session configuration</li>
+            </ul>
+            
+            <h4>Database Connection Issues</h4>
+            <ul>
+                <li>Check database file permissions</li>
+                <li>Verify DATABASES setting in settings.py</li>
+                <li>Try recreating database with migrate</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+.row {
+    display: flex;
+    gap: 20px;
+}
+.col-md-6 {
+    flex: 1;
+}
+</style>
+{% endblock %}
